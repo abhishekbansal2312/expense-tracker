@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Modal from "../components/Modal";
 import Form from "../components/Form";
 import EditForm from "../components/EditForm";
+import { toast } from "react-hot-toast";
 
 const AddExpense = () => {
   const [expense, setExpense] = useState("");
@@ -39,7 +40,7 @@ const AddExpense = () => {
     let data = JSON.parse(localStorage.getItem("expenses") || "[]");
     data.push(expenseData);
     localStorage.setItem("expenses", JSON.stringify(data));
-
+    toast.success("Expense Added successfully!");
     setArrayofObject(data);
     setShowModal(false);
     resetFields();
@@ -54,10 +55,12 @@ const AddExpense = () => {
   }, [ArrayofObject]);
 
   const handleDelete = (idx) => {
-    const data = JSON.parse(localStorage.getItem("expenses")) || [];
+    const data = JSON.parse(localStorage.getItem("expenses"));
     data.splice(idx, 1);
     localStorage.setItem("expenses", JSON.stringify(data));
+
     setArrayofObject(data);
+    toast.success("Expense deleted successfully!");
   };
 
   const handleEdit = (index) => {
@@ -72,6 +75,7 @@ const AddExpense = () => {
     let data = JSON.parse(localStorage.getItem("expenses"));
     data[index] = updatedExpenseData;
     localStorage.setItem("expenses", JSON.stringify(data));
+    toast.success("Item Edit successfully!");
     setArrayofObject(data);
     setShowEdit(false);
     resetFields();
