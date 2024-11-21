@@ -5,7 +5,12 @@ const Form = ({
   setAmount,
   setCategory,
   onClose,
+  expense,
+  category,
+  amount,
 }) => {
+  console.log(expense, amount);
+
   return (
     <>
       <form
@@ -24,6 +29,7 @@ const Form = ({
             id="expense"
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             onChange={(e) => setExpense(e.target.value)}
+            value={expense}
           />
         </div>
         <div>
@@ -38,6 +44,7 @@ const Form = ({
             id="amount"
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             onChange={(e) => setAmount(e.target.value)}
+            value={amount}
           />
         </div>
         <div>
