@@ -12,8 +12,7 @@ function App() {
         <Toaster position="top-right" />
         <Routes>
           <Route>
-            <Route path="/" element={<Home />} />
-            <Route path="/addexpense" element={<Expense />}></Route>
+            <Route path="/" element={<Expense />}></Route>
           </Route>
         </Routes>
       </BrowserRouter>

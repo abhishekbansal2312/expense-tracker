@@ -17,17 +17,18 @@ const ExpenseList = () => {
       {ArrayofObject.map((expense, idx) => (
         <div
           key={idx}
-          className="bg-white shadow-md rounded-md p-4 flex flex-col sm:flex-row sm:justify-between items-start sm:items-center border-l-2 border-b-2 border-sky-700"
+          className="bg-white shadow-md rounded-md p-4 flex flex-wrap sm:flex-nowrap sm:justify-between items-center border-l-2 border-b-2 border-sky-700"
         >
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-10">
-            <h2 className="text-lg font-bold text-gray-800">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-10 items-center flex-grow">
+            <h2 className="text-lg font-bold text-gray-800 truncate">
               {expense.expense}
             </h2>
             <p className="text-sm text-gray-600">₹{expense.amount}</p>
             <p className="text-sm text-gray-600">{expense.category}</p>
             <p className="text-sm text-gray-600">{expense.date}</p>
           </div>
-          <div className="mt-4 sm:mt-0 flex gap-3">
+
+          <div className="mt-4 sm:mt-0 flex gap-4 sm:ml-4">
             <button
               onClick={() => handleEditClick(idx)}
               aria-label="Edit Expense"
