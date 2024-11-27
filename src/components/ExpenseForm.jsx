@@ -1,18 +1,19 @@
 import "../App.css";
-const Form = ({
-  handleEdit,
-  setExpense,
-  setAmount,
-  setCategory,
-  onClose,
-  expense,
-  amount,
-  category,
-}) => {
+import { useExpenseContext } from "../contexts/ExpenseContext";
+const Form = () => {
+  const {
+    handleSubmit,
+    setExpense,
+    setAmount,
+    setCategory,
+    expense,
+    category,
+    amount,
+  } = useExpenseContext();
   return (
     <>
       <form
-        onSubmit={handleEdit}
+        onSubmit={handleSubmit}
         className="space-y-4 grid grid-cols-1 md:grid-cols-4 gap-4 mb-5"
       >
         <div>
@@ -26,8 +27,8 @@ const Form = ({
             type="text"
             id="expense"
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            value={expense}
             onChange={(e) => setExpense(e.target.value)}
+            value={expense}
           />
         </div>
         <div>
@@ -41,8 +42,8 @@ const Form = ({
             type="number"
             id="amount"
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            value={amount}
             onChange={(e) => setAmount(e.target.value)}
+            value={amount}
           />
         </div>
         <div>
@@ -83,7 +84,7 @@ const Form = ({
             type="submit"
             className="w-32 bg-indigo-600 text-white px-4 py-2 rounded-md shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
-            Edit Expense
+            Add Expense
           </button>
         </div>
       </form>

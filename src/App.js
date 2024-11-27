@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Header from "./components/Header";
-import AddExpense from "./pages/AddExpense";
+import Expense from "./pages/Expense";
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -13,7 +13,7 @@ function App() {
         <Routes>
           <Route>
             <Route path="/" element={<Home />} />
-            <Route path="/addexpense" element={<AddExpense />}></Route>
+            <Route path="/addexpense" element={<Expense />}></Route>
           </Route>
         </Routes>
       </BrowserRouter>
