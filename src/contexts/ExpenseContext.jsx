@@ -8,9 +8,10 @@ export const ExpenseProvider = ({ children }) => {
   const [expense, setExpense] = useState("");
   const [category, setCategory] = useState("Food");
   const [amount, setAmount] = useState("");
-  const [ArrayofObject, setArrayofObject] = useState(
-    JSON.parse(localStorage.getItem("expenses")) || []
-  );
+  const [ArrayofObject, setArrayofObject] = useState(() => {
+    const storedExpenses = localStorage.getItem("expenses");
+    return storedExpenses ? JSON.parse(storedExpenses) : [];
+  });
   const total = ArrayofObject.reduce(
     (acc, curr) => acc + Number(curr.amount),
     0

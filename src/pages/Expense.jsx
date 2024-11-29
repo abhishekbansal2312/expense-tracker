@@ -6,17 +6,8 @@ import { useExpenseContext } from "../contexts/ExpenseContext";
 import ExpenseAddBalance from "../components/ExpenseAddBalance";
 
 const Expense = () => {
-  const {
-    isEditing,
-    total,
-    balance,
-    money,
-    setMoney,
-    showModal,
-    setShowModal,
-    handleAddbalance,
-    resetFields,
-  } = useExpenseContext();
+  const { isEditing, total, balance, showModal, setShowModal, resetFields } =
+    useExpenseContext();
 
   return (
     <div className="max-w-6xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
