@@ -11,18 +11,20 @@ export const ExpenseProvider = ({ children }) => {
   const [ArrayofObject, setArrayofObject] = useState(
     JSON.parse(localStorage.getItem("expenses")) || []
   );
-  const [total, setTotal] = useState(0);
+  const total = ArrayofObject.reduce(
+    (acc, curr) => acc + Number(curr.amount),
+    0
+  );
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [index, setIndex] = useState(null);
-  const [balance, setBalance] = useState(0);
+  const balance = JSON.parse(localStorage.getItem("balance") || "0") - total;
   const [money, setMoney] = useState("");
 
   const handleAddbalance = (e) => {
     e.preventDefault();
     const data = JSON.parse(localStorage.getItem("balance") || "0");
     const newBalance = data + Number(money);
-    setBalance(newBalance);
     localStorage.setItem("balance", JSON.stringify(newBalance));
     setMoney("");
   };
@@ -37,7 +39,6 @@ export const ExpenseProvider = ({ children }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validation
     if (!expense || amount <= 0) {
       toast.error("Please fill in all fields with valid data.");
       return;
@@ -51,41 +52,21 @@ export const ExpenseProvider = ({ children }) => {
       date,
     };
 
-    // Fetch existing data from localStorage
     const data = JSON.parse(localStorage.getItem("expenses") || "[]");
 
-    // Add or Update
     if (isEditing && index !== null) {
-      // Editing existing expense
       data[index] = expenseData;
       toast.success("Expense updated successfully!");
     } else {
-      // Adding a new expense
       data.push(expenseData);
       toast.success("Expense added successfully!");
     }
 
-    // Update localStorage and state
     localStorage.setItem("expenses", JSON.stringify(data));
     setArrayofObject(data);
-
-    // Close modal and reset fields
     setShowModal(false);
     resetFields();
   };
-
-  useEffect(() => {
-    if (ArrayofObject) {
-      setTotal(
-        ArrayofObject.reduce((acc, curr) => acc + Number(curr.amount), 0)
-      );
-    }
-  }, [ArrayofObject]);
-
-  useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("balance") || "0");
-    setBalance(data - total);
-  }, [total]);
 
   const handleDelete = (idx) => {
     const data = JSON.parse(localStorage.getItem("expenses"));
