@@ -8,26 +8,49 @@ export const ExpenseProvider = ({ children }) => {
   const [expense, setExpense] = useState("");
   const [category, setCategory] = useState("Food");
   const [amount, setAmount] = useState("");
-  const [ArrayofObject, setArrayofObject] = useState(() => {
-    const storedExpenses = localStorage.getItem("expenses");
-    return storedExpenses ? JSON.parse(storedExpenses) : [];
-  });
+  const [ArrayofObject, setArrayofObject] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [index, setIndex] = useState(null);
   const total = ArrayofObject.reduce(
     (acc, curr) => acc + Number(curr.amount),
     0
   );
-  const [showModal, setShowModal] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [index, setIndex] = useState(null);
-  const balance = JSON.parse(localStorage.getItem("balance") || "0") - total;
+  const [balance, setBalance] = useState("");
   const [money, setMoney] = useState("");
+
+  useEffect(() => {
+    fetchdata();
+    fetchBalane();
+    console.log("data coming");
+  }, []);
+
+  async function fetchBalane() {
+    try {
+      const storedData = localStorage.getItem("balance");
+      const data = storedData ? JSON.parse(storedData) : "";
+      setBalance(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async function fetchdata() {
+    try {
+      const storedData = localStorage.getItem("expenses");
+      const data = storedData ? JSON.parse(storedData) : [];
+      setArrayofObject(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handleAddbalance = (e) => {
     e.preventDefault();
-    const data = JSON.parse(localStorage.getItem("balance") || "0");
+    const data = balance;
     const newBalance = data + Number(money);
     localStorage.setItem("balance", JSON.stringify(newBalance));
     setMoney("");
+    setBalance(newBalance);
   };
 
   const resetFields = () => {
@@ -53,7 +76,7 @@ export const ExpenseProvider = ({ children }) => {
       date,
     };
 
-    const data = JSON.parse(localStorage.getItem("expenses") || "[]");
+    const data = [...ArrayofObject];
 
     if (isEditing && index !== null) {
       data[index] = expenseData;
@@ -70,7 +93,7 @@ export const ExpenseProvider = ({ children }) => {
   };
 
   const handleDelete = (idx) => {
-    const data = JSON.parse(localStorage.getItem("expenses"));
+    const data = [...ArrayofObject];
     data.splice(idx, 1);
     localStorage.setItem("expenses", JSON.stringify(data));
     setArrayofObject(data);
