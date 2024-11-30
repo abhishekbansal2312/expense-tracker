@@ -8,58 +8,45 @@ export const ExpenseProvider = ({ children }) => {
   const [expense, setExpense] = useState("");
   const [category, setCategory] = useState("Food");
   const [amount, setAmount] = useState("");
-  const [ArrayofObject, setArrayofObject] = useState([]);
+  const [ArrayofObject, setArrayofObject] = useState([]); // Renamed from `expenses`
   const [showModal, setShowModal] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [index, setIndex] = useState(null);
+  const [index, setIndex] = useState(-1);
+  const [balance, setBalance] = useState(0);
+  const [money, setMoney] = useState("");
+
   const total = ArrayofObject.reduce(
     (acc, curr) => acc + Number(curr.amount),
     0
   );
-  const [balance, setBalance] = useState("");
-  const [money, setMoney] = useState("");
 
   useEffect(() => {
-    fetchdata();
-    fetchBalane();
-    console.log("data coming");
+    try {
+      const storedBalance = JSON.parse(localStorage.getItem("balance")) || 0;
+      const storedArrayofObject =
+        JSON.parse(localStorage.getItem("expenses")) || [];
+      setBalance(storedBalance);
+      setArrayofObject(storedArrayofObject); // Updated to use `ArrayofObject`
+    } catch (error) {
+      console.error("Error initializing data:", error);
+    }
   }, []);
 
-  async function fetchBalane() {
-    try {
-      const storedData = localStorage.getItem("balance");
-      const data = storedData ? JSON.parse(storedData) : "";
-      setBalance(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  async function fetchdata() {
-    try {
-      const storedData = localStorage.getItem("expenses");
-      const data = storedData ? JSON.parse(storedData) : [];
-      setArrayofObject(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const handleAddbalance = (e) => {
+  const handleAddBalance = (e) => {
     e.preventDefault();
-    const data = balance;
-    const newBalance = data + Number(money);
-    localStorage.setItem("balance", JSON.stringify(newBalance));
-    setMoney("");
+    const newBalance = balance + Number(money);
     setBalance(newBalance);
+    setMoney("");
+    localStorage.setItem("balance", JSON.stringify(newBalance));
+    toast.success("Balance updated successfully!");
   };
 
   const resetFields = () => {
     setExpense("");
     setCategory("Food");
     setAmount("");
-    setIndex(null);
-    setIsEditing(false);
+    setIndex(-1);
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -70,6 +57,7 @@ export const ExpenseProvider = ({ children }) => {
 
     const date = new Date().toLocaleDateString();
     const expenseData = {
+      id: index !== -1 ? ArrayofObject[index].id : Date.now().toString(),
       expense,
       category,
       amount: Number(amount),
@@ -77,8 +65,7 @@ export const ExpenseProvider = ({ children }) => {
     };
 
     const data = [...ArrayofObject];
-
-    if (isEditing && index !== null) {
+    if (index !== -1) {
       data[index] = expenseData;
       toast.success("Expense updated successfully!");
     } else {
@@ -86,17 +73,16 @@ export const ExpenseProvider = ({ children }) => {
       toast.success("Expense added successfully!");
     }
 
-    localStorage.setItem("expenses", JSON.stringify(data));
     setArrayofObject(data);
-    setShowModal(false);
+    localStorage.setItem("expenses", JSON.stringify(data));
     resetFields();
+    setShowModal(false);
   };
 
   const handleDelete = (idx) => {
-    const data = [...ArrayofObject];
-    data.splice(idx, 1);
-    localStorage.setItem("expenses", JSON.stringify(data));
+    const data = ArrayofObject.filter((_, i) => i !== idx);
     setArrayofObject(data);
+    localStorage.setItem("expenses", JSON.stringify(data));
     toast.success("Expense deleted successfully!");
   };
 
@@ -106,7 +92,6 @@ export const ExpenseProvider = ({ children }) => {
     setCategory(expenseToEdit.category);
     setAmount(expenseToEdit.amount);
     setIndex(idx);
-    setIsEditing(true);
     setShowModal(true);
   };
 
@@ -124,14 +109,12 @@ export const ExpenseProvider = ({ children }) => {
         total,
         showModal,
         setShowModal,
-        isEditing,
-        setIsEditing,
         index,
         setIndex,
         balance,
         money,
         setMoney,
-        handleAddbalance,
+        handleAddBalance,
         resetFields,
         handleSubmit,
         handleDelete,

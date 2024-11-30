@@ -6,7 +6,7 @@ import { useExpenseContext } from "../contexts/ExpenseContext";
 import ExpenseAddBalance from "../components/ExpenseAddBalance";
 
 const Expense = () => {
-  const { isEditing, total, balance, showModal, setShowModal, resetFields } =
+  const { total, index, balance, showModal, setShowModal, resetFields } =
     useExpenseContext();
 
   return (
@@ -44,7 +44,7 @@ const Expense = () => {
           onClose={() => {
             setShowModal(false);
           }}
-          title={isEditing ? "Edit Expense" : "Add Expense"}
+          title={index > -1 ? "Edit Expense" : "Add Expense"}
         >
           <Form />
         </Modal>
