@@ -16,7 +16,7 @@ const ExpenseList = () => {
     <div className="mt-4 space-y-4">
       {ArrayofObject.map((expense, idx) => (
         <div
-          key={idx}
+          key={expense.id}
           className="bg-white shadow-md rounded-md p-4 flex flex-wrap sm:flex-nowrap sm:justify-between items-center border-l-2 border-b-2 border-sky-700"
         >
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-10 items-center flex-grow">

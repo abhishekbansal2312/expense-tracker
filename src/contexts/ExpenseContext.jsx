@@ -5,14 +5,15 @@ const ExpenseContext = createContext();
 export const useExpenseContext = () => useContext(ExpenseContext);
 
 export const ExpenseProvider = ({ children }) => {
-  const [expense, setExpense] = useState("");
-  const [category, setCategory] = useState("Food");
-  const [amount, setAmount] = useState("");
-  const [ArrayofObject, setArrayofObject] = useState([]); // Renamed from `expenses`
+  const [formValues, setFormValues] = useState({
+    expense: "",
+    amount: "",
+    category: "Food",
+  });
+  const [ArrayofObject, setArrayofObject] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [index, setIndex] = useState(-1);
   const [balance, setBalance] = useState(0);
-  const [money, setMoney] = useState("");
 
   const total = ArrayofObject.reduce(
     (acc, curr) => acc + Number(curr.amount),
@@ -21,34 +22,41 @@ export const ExpenseProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      const storedBalance = JSON.parse(localStorage.getItem("balance")) || 0;
+      const data = JSON.parse(localStorage.getItem("balance")) || 0;
       const storedArrayofObject =
         JSON.parse(localStorage.getItem("expenses")) || [];
-      setBalance(storedBalance);
-      setArrayofObject(storedArrayofObject); // Updated to use `ArrayofObject`
+      setBalance(data);
+      setArrayofObject(storedArrayofObject);
     } catch (error) {
-      console.error("Error initializing data:", error);
+      toast.error("Error initializing data:", error);
     }
   }, []);
 
-  const handleAddBalance = (e) => {
-    e.preventDefault();
-    const newBalance = balance + Number(money);
+  const handleAddBalance = (amount) => {
+    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+      toast.error("Please enter a valid amount.");
+      return;
+    }
+
+    const newBalance = balance + Number(amount);
     setBalance(newBalance);
-    setMoney("");
     localStorage.setItem("balance", JSON.stringify(newBalance));
     toast.success("Balance updated successfully!");
   };
 
   const resetFields = () => {
-    setExpense("");
-    setCategory("Food");
-    setAmount("");
+    setFormValues({
+      expense: "",
+      amount: "",
+      category: "Food",
+    });
     setIndex(-1);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const { expense, amount, category } = formValues;
 
     if (!expense || amount <= 0) {
       toast.error("Please fill in all fields with valid data.");
@@ -88,9 +96,11 @@ export const ExpenseProvider = ({ children }) => {
 
   const handleEditClick = (idx) => {
     const expenseToEdit = ArrayofObject[idx];
-    setExpense(expenseToEdit.expense);
-    setCategory(expenseToEdit.category);
-    setAmount(expenseToEdit.amount);
+    setFormValues({
+      expense: expenseToEdit.expense,
+      category: expenseToEdit.category,
+      amount: expenseToEdit.amount,
+    });
     setIndex(idx);
     setShowModal(true);
   };
@@ -98,12 +108,8 @@ export const ExpenseProvider = ({ children }) => {
   return (
     <ExpenseContext.Provider
       value={{
-        expense,
-        setExpense,
-        category,
-        setCategory,
-        amount,
-        setAmount,
+        formValues,
+        setFormValues,
         ArrayofObject,
         setArrayofObject,
         total,
@@ -112,8 +118,6 @@ export const ExpenseProvider = ({ children }) => {
         index,
         setIndex,
         balance,
-        money,
-        setMoney,
         handleAddBalance,
         resetFields,
         handleSubmit,

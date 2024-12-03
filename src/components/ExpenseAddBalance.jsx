@@ -2,10 +2,16 @@ import React from "react";
 import { useExpenseContext } from "../contexts/ExpenseContext";
 
 export default function ExpenseAddBalance() {
-  const { handleAddbalance, setMoney, money } = useExpenseContext();
+  const { handleAddBalance } = useExpenseContext();
+  const [money, setMoney] = React.useState(0);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleAddBalance(money);
+    setMoney("");
+  };
   return (
     <div>
-      <form onSubmit={handleAddbalance} className="mt-2">
+      <form onSubmit={handleSubmit} className="mt-2">
         <div className="flex items-center gap-4">
           <div>
             <label htmlFor="balance" className="block text-gray-600 ">

@@ -1,15 +1,17 @@
 import "../App.css";
 import { useExpenseContext } from "../contexts/ExpenseContext";
+
 const Form = () => {
-  const {
-    handleSubmit,
-    setExpense,
-    setAmount,
-    setCategory,
-    expense,
-    category,
-    amount,
-  } = useExpenseContext();
+  const { handleSubmit, formValues, setFormValues } = useExpenseContext();
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormValues((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
   return (
     <>
       <form
@@ -27,8 +29,8 @@ const Form = () => {
             type="text"
             id="expense"
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            onChange={(e) => setExpense(e.target.value)}
-            value={expense}
+            onChange={handleChange}
+            value={formValues.expense}
           />
         </div>
         <div>
@@ -42,8 +44,8 @@ const Form = () => {
             type="number"
             id="amount"
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            onChange={(e) => setAmount(e.target.value)}
-            value={amount}
+            onChange={handleChange}
+            value={formValues.amount}
           />
         </div>
         <div>
@@ -56,8 +58,8 @@ const Form = () => {
           <select
             id="category"
             className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            onChange={(e) => setCategory(e.target.value)}
-            value={category}
+            onChange={handleChange}
+            value={formValues.category}
           >
             <option value="" disabled hidden>
               Select Category
