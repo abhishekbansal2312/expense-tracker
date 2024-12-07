@@ -30,14 +30,14 @@ const ExpenseList = () => {
 
           <div className="mt-4 sm:mt-0 flex gap-4 sm:ml-4">
             <button
-              onClick={() => handleEditClick(idx)}
+              onClick={() => handleEditClick(expense.id)}
               aria-label="Edit Expense"
               className="flex items-center justify-center bg-blue-500 text-white p-2 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               <PencilIcon className="h-4 w-4" />
             </button>
             <button
-              onClick={() => handleDelete(idx)}
+              onClick={() => handleDelete(expense.id)}
               aria-label="Delete Expense"
               className="flex items-center justify-center bg-red-500 text-white p-2 rounded-md shadow hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
             >

@@ -58,14 +58,14 @@ export const ExpenseProvider = ({ children }) => {
 
     const { expense, amount, category } = formValues;
 
-    if (!expense || amount <= 0) {
+    if (!expense || Number(amount) <= 0) {
       toast.error("Please fill in all fields with valid data.");
       return;
     }
 
     const date = new Date().toLocaleDateString();
     const expenseData = {
-      id: index !== -1 ? ArrayofObject[index].id : Date.now().toString(),
+      id: index !== -1 ? index : Date.now().toString(), // Use `index` as ID when editing
       expense,
       category,
       amount: Number(amount),
@@ -74,7 +74,10 @@ export const ExpenseProvider = ({ children }) => {
 
     const data = [...ArrayofObject];
     if (index !== -1) {
-      data[index] = expenseData;
+      const itemIndex = data.findIndex((item) => item.id === index);
+      if (itemIndex !== -1) {
+        data[itemIndex] = expenseData;
+      }
       toast.success("Expense updated successfully!");
     } else {
       data.push(expenseData);
@@ -87,22 +90,42 @@ export const ExpenseProvider = ({ children }) => {
     setShowModal(false);
   };
 
-  const handleDelete = (idx) => {
-    const data = ArrayofObject.filter((_, i) => i !== idx);
-    setArrayofObject(data);
-    localStorage.setItem("expenses", JSON.stringify(data));
+  const handleDelete = (id) => {
+    const updatedData = ArrayofObject.filter((item) => item.id !== id);
+    setArrayofObject(updatedData);
+    localStorage.setItem("expenses", JSON.stringify(updatedData));
     toast.success("Expense deleted successfully!");
   };
 
-  const handleEditClick = (idx) => {
-    const expenseToEdit = ArrayofObject[idx];
+  const handleEditClick = (id) => {
+    const expenseToEdit = ArrayofObject.find((item) => item.id === id);
+
+    if (!expenseToEdit) {
+      toast.error("Expense not found.");
+      return;
+    }
+
     setFormValues({
       expense: expenseToEdit.expense,
       category: expenseToEdit.category,
       amount: expenseToEdit.amount,
     });
-    setIndex(idx);
+    setIndex(id);
     setShowModal(true);
+  };
+  const [filterItems, setFilterItems] = useState(ArrayofObject);
+
+  const handleSearch = (e) => {
+    const search = e.target.value;
+    if (search.trim() == null) {
+      setFilterItems(ArrayofObject);
+    }
+
+    setFilterItems(
+      ArrayofObject.filter((item) =>
+        item.expense.toLowerCase().includes(search.toLowerCase())
+      )
+    );
   };
 
   return (
